@@ -9,7 +9,8 @@ export type Connections = Record<string, ConnectionDetails>
 export const Drivers = {
   SQLite: "sqlite",
   PostgreSQL: "postgresql",
-  MySQL: "mysql"
+  MySQL: "mysql",
+  MSSQL: "mssql"
 } as const
 
 /**

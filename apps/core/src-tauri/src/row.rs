@@ -29,7 +29,11 @@ pub async fn get_paginated_rows(
         Drivers::MySQL => {
             mysql::row::get_paginated_rows(&db, table_name, page_index, page_size).await
         }
+        Drivers::MSSQL => {
+            postgres::row::get_paginated_rows(&db, table_name, page_index, page_size).await
+        }
     }
+
 }
 
 #[tauri::command]
@@ -59,6 +63,9 @@ pub async fn delete_rows(
             postgres::row::delete_rows(&db, pk_col_name, table_name, params).await
         }
         Drivers::MySQL => mysql::row::delete_rows(&db, pk_col_name, table_name, params).await,
+        Drivers::MSSQL => {
+            postgres::row::delete_rows(&db, pk_col_name, table_name, params).await
+        }
     }
 }
 
@@ -90,6 +97,8 @@ pub async fn create_row(
         Drivers::SQLite => sqlite::row::create_row(&db, table_name, columns, values).await,
         Drivers::PostgreSQL => postgres::row::create_row(&db, table_name, columns, values).await,
         Drivers::MySQL => mysql::row::create_row(&db, table_name, columns, values).await,
+        Drivers::MSSQL => postgres::row::create_row(&db, table_name, columns, values).await,
+        
     }
 }
 
@@ -123,6 +132,10 @@ pub async fn update_row(
         }
         Drivers::MySQL => {
             mysql::row::update_row(&db, table_name, set_condition, pk_col_name, pk_col_value).await
+        }
+        Drivers::MSSQL => {
+            postgres::row::update_row(&db, table_name, set_condition, pk_col_name, pk_col_value)
+                .await
         }
     }
 }

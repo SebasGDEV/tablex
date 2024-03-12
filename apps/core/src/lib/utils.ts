@@ -13,7 +13,7 @@ type ConnectionStringParams =
       filePath: string
     }
   | {
-      driver: typeof Drivers.PostgreSQL | typeof Drivers.MySQL
+      driver: typeof Drivers.PostgreSQL | typeof Drivers.MySQL | typeof Drivers.MSSQL
       username: string
       password: string
       host: string
@@ -32,9 +32,11 @@ export function constructConnectionString(params: ConnectionStringParams) {
       connString = `${params.driver}:${params.filePath}`
       break
     case Drivers.PostgreSQL:
+    case Drivers.MSSQL:
     case Drivers.MySQL:
       connString = `${params.driver}://${params.username}:${params.password}@${params.host}:${params.port}/${params.db}?sslmode=disable`
       break
+    
   }
   return connString
 }

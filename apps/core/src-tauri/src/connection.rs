@@ -1,5 +1,5 @@
 use crate::{
-    drivers::{mysql, postgres, sqlite},
+    drivers::{mssql, mysql, postgres, sqlite},
     utils::{
         delete_from_connections_file, get_connections_file_path, read_from_connections_file,
         write_into_connections_file, Drivers,
@@ -8,18 +8,34 @@ use crate::{
 };
 use sqlx::{AnyConnection, Connection};
 use tauri::State;
+use tiberius::{Client, Config};
+use tokio::net::TcpStream;
+use tokio_util::compat::TokioAsyncWriteCompatExt;
 
 #[tauri::command]
-pub async fn test_connection(conn_string: String) -> Result<String, String> {
-    sqlx::any::install_default_drivers();
-    let mut con = AnyConnection::connect(conn_string.as_str())
-        .await
-        .map_err(|_| "Couldn't connect to DB".to_string())?;
-    con.ping()
-        .await
-        .map_err(|_| "DB not responding to Pings".to_string())?;
+pub async fn test_connection(conn_string: String, driver: Drivers) -> Result<String, String> {
+    println!("GHere testing default driver");
+    println!("{}", conn_string);
+    match driver {
+        Drivers::MSSQL => {
+            let config: Config = Config::from_ado_string(&conn_string).unwrap();
+            let tcp: TcpStream = TcpStream::connect(config.get_addr()).await.unwrap();
+            tcp.set_nodelay(true).unwrap();
+            let client = Client::connect(config, tcp.compat_write()).await.unwrap();
+            client.close().await.unwrap();
+        }
+        _ => {
+            sqlx::any::install_default_drivers();
+            let mut con = AnyConnection::connect(conn_string.as_str())
+                .await
+                .map_err(|_| "Couldn't connect to DB".to_string())?;
+            con.ping()
+                .await
+                .map_err(|_| "DB not responding to Pings".to_string())?;
 
-    let _ = con.close().await;
+            let _ = con.close().await;
+        }
+    }
 
     Ok("Connection is healthy".to_string())
 }
@@ -61,6 +77,7 @@ pub async fn establish_connection(
             postgres::connection::establish_connection(&db, conn_string, driver).await
         }
         Drivers::MySQL => mysql::connection::establish_connection(&db, conn_string, driver).await,
+        Drivers::MSSQL => mssql::connection::establish_connection(&db, conn_string, driver).await,
     }
 }
 

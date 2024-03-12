@@ -7,7 +7,7 @@ export const generateColumnsDefs = async (
   tableName: string
 ): Promise<ColumnDef<any>[]> => {
   const columns = await getColsDefinitions(tableName)
-
+  console.log(JSON.stringify(columns));
   const columnsDefinition: ColumnDef<any>[] = Object.entries(columns).map(
     ([colName, colProps]) => {
       const columnDefinition: ColumnDef<any> = {

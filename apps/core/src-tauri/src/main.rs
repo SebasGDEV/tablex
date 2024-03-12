@@ -27,6 +27,7 @@ pub struct DbInstance {
     postgres_pool: Mutex<Option<PgPool>>,
     mysql_pool: Mutex<Option<MySqlPool>>,
     driver: Mutex<Option<Drivers>>,
+    mssql_pool: Mutex<Option<deadpool_tiberius::Pool>>,
     #[cfg(not(debug_assertions))]
     metax_command_child: Mutex<Option<CommandChild>>,
 }
@@ -68,6 +69,7 @@ fn main() {
             postgres_pool: Default::default(),
             mysql_pool: Default::default(),
             driver: Default::default(),
+            mssql_pool: Default::default(),
             #[cfg(not(debug_assertions))]
             metax_command_child: Default::default(),
         })

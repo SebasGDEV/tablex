@@ -138,7 +138,7 @@ const ConnectionParamsForm = ({ driver }: ConnectionParamsFormProps) => {
             className="w-[100px] bg-green-500 hover:bg-green-700"
             onClick={form.handleSubmit(onClickTest)}
           >
-            Test
+            Test yeah
           </Button>
         </div>
       </form>

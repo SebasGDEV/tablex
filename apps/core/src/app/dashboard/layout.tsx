@@ -47,7 +47,11 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
         connDetails.driver,
         router
       )
-      if (error) return
+      
+      if (error)
+      {
+        return
+      } 
       const tables = await getTables()
       setTables(tables)
       return { connName: connDetails.connName, tables }
@@ -68,9 +72,9 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
       setTables(filteredTables)
     }, 100)
   }
-
+  console.log('opening dashboard')
   if (isLoading) return <LoadingSpinner />
-
+  console.log('opening dashboard v2')
   return (
     <main className="flex h-full">
       <aside className="flex w-56 flex-col items-start justify-between overflow-y-auto bg-zinc-800 p-3 lg:w-72 lg:p-5">

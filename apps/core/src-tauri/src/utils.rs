@@ -12,6 +12,7 @@ pub enum Drivers {
     SQLite,
     PostgreSQL,
     MySQL,
+    MSSQL
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -1,5 +1,5 @@
 use crate::{
-    drivers::{mysql, postgres, sqlite},
+    drivers::{mssql, mysql, postgres, sqlite},
     utils::Drivers,
     DbInstance,
 };
@@ -11,10 +11,12 @@ use tauri::State;
 pub async fn get_tables(db: State<'_, DbInstance>) -> Result<Vec<String>, String> {
     let long_lived = db.driver.lock().await;
     let driver = long_lived.as_ref().unwrap();
+
     match driver {
         Drivers::SQLite => sqlite::table::get_tables(&db).await,
         Drivers::PostgreSQL => postgres::table::get_tables(&db).await,
         Drivers::MySQL => mysql::table::get_tables(&db).await,
+        Drivers::MSSQL => mssql::table::get_tables(&db).await,
     }
 }
 
@@ -30,5 +32,6 @@ pub async fn get_columns_definition(
         Drivers::SQLite => sqlite::table::get_columns_definition(&db, table_name).await,
         Drivers::PostgreSQL => postgres::table::get_columns_definition(&db, table_name).await,
         Drivers::MySQL => mysql::table::get_columns_definition(&db, table_name).await,
+        Drivers::MSSQL => mssql::table::get_columns_definition(&db, table_name).await,
     }
 }

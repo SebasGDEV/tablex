@@ -47,7 +47,7 @@ export const useSetupReactTable = <TData, TValue>({
       rowSelection,
       pagination
     },
-    manualPagination: true,
+    manualPagination: false,
     debugTable: process.env.NODE_ENV === "development" ? true : false
   })
 
@@ -63,6 +63,7 @@ export const useSetupReactTable = <TData, TValue>({
 }
 
 const useSetupPagination = () => {
+  console.log('Setting up pagination')
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 500 // TODO: hard coded for now
